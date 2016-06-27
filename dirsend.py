@@ -50,7 +50,7 @@ def processDir():
             continue
 
         print "Processing file {}".format(absPath)
-        cmd = args.command.format(fileName)
+        cmd = args.command.format(absPath)
         logger.debug("Executing command \"{}\"".format(cmd))
         returnCode = call(cmd, shell=True)
 
