@@ -20,6 +20,28 @@ A typical invocation might look like this:
 
 This would run the above ```rsync``` command, substituting ```{}``` with the full filename of each unprocessed file or directory in ```/source_directory```.
 
+### Getting up and running quickly
+
+Get the source:
+```sh
+git clone https://github.com/cutchin/dirsend.git
+```
+
+Optionally mark all files are processed if the existing files don't need to be processed:
+```sh
+./dirsend.py /src_dir --store-only
+```
+
+Make a cron job to run it:
+```
+crontab -e
+
+...
+
+# Attempt to sync /src_dir to remote location every five minutes
+*/5    *    *    *    *    ~/??/dirsend/dirsend.py /src_dir -c 'rsync -a "{}" user@host:/dest_dir'
+```
+
 ### Other Options
 
 #### Listing files in the file database:
@@ -39,7 +61,18 @@ __This does not delete files!__ All it does is removes the relevant entry from t
 This would be useful the first time ```dirsend``` is used or if your database is deleted.  It "pretends" the files in the directory have been processed, marking them as such in the database, so they won't be processed in subsequent runs:
 
 ```sh
-./dirsend.py --store-only
+./dirsend.py --store-only /source_dir
+```
+#### Dealing with more than one directory
+By default, the database and lock files go in your home directory.  That's fine, but if you are tracking files in more than
+one directory this will cause the whole process to fall apart.  Files from directory one will be purged from the database
+when it is run on directory two, etc.  Everything will be sent every time, etc.
+
+To avoid this, use the ```--data-dir``` parameter.  For example:
+
+```sh
+./dirsend.py --data-dir ~/tmp -c 'rsync etc...' ~/tmp
+./dirsend.py --data-dir ~/another_dir -c 'rsync etc...' ~/another_dir
 ```
 
 ### Alternatives
