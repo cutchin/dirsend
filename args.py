@@ -25,7 +25,7 @@ args = parser.parse_args();
 if not (args.directory or args.list_entries or args.delete_entry):
     parser.error('Either a directory, --list-entries or --delete-entry required.')
 
-if args.directory and not args.command:
+if args.directory and not (args.command or args.store_only):
     parser.error('A directory was specified but no command provided with -c or --command')
 
 # configure runtime parameter based on arguments
